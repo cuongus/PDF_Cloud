@@ -1,0 +1,44 @@
+managed implementation in class zbp_r_ads_templatetp unique;
+strict ( 2 );
+with draft;
+
+define behavior for ZR_ADS_TEMPLATETP alias Template
+persistent table zads_a_template
+draft table zads_d_template
+etag master LocalLastChangedAt
+lock master total etag LastChangedAt
+authorization master ( global )
+{
+  create ( precheck );
+  update;
+  delete;
+
+  field ( mandatory : create, readonly : update ) TemplateId;
+  field ( mandatory ) Description;
+  field ( readonly ) TemplateVersion, CreatedBy, CreatedAt, LastChangedBy, LastChangedAt, LocalLastChangedAt;
+
+  determination deriveMimeType on modify { create; field FileName; }
+  determination setVersion on save { create; field FileContent; }
+  validation validateTemplate on save { create; field TemplateId, FileContent, MimeType; }
+
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Edit;
+  draft action Resume;
+  draft determine action Prepare { validation validateTemplate; }
+
+  mapping for zads_a_template corresponding
+  {
+    TemplateId         = template_id;
+    Description        = description;
+    FileContent        = file_content;
+    MimeType           = mime_type;
+    FileName           = file_name;
+    TemplateVersion    = template_version;
+    CreatedBy          = created_by;
+    CreatedAt          = created_at;
+    LastChangedBy      = last_changed_by;
+    LastChangedAt      = last_changed_at;
+    LocalLastChangedAt = local_last_changed_at;
+  }
+}

@@ -1,0 +1,5 @@
+CLASS zbp_r_ads_templatetp DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zr_ads_templatetp.
+ENDCLASS.
+
+CLASS zbp_r_ads_templatetp IMPLEMENTATION.
+ENDCLASS.

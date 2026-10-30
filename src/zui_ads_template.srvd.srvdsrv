@@ -1,0 +1,4 @@
+@EndUserText.label: 'ADS PDF template - UI service'
+define service ZUI_ADS_TEMPLATE {
+  expose ZC_ADS_TEMPLATETP as Template;
+}

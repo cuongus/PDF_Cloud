@@ -1,0 +1,21 @@
+@EndUserText.label : 'ADS PDF template'
+@AbapCatalog.enhancement.category : #NOT_EXTENSIBLE
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #A
+@AbapCatalog.dataMaintenance : #RESTRICTED
+define table zads_a_template {
+
+  key client            : abap.clnt not null;
+  key template_id       : abap.char(40) not null;
+  description           : abap.char(80);
+  file_content          : abap.rawstring(0);
+  mime_type             : abap.char(128);
+  file_name             : abap.char(255);
+  template_version      : abap.int4;
+  created_by            : abp_creation_user;
+  created_at            : abp_creation_tstmpl;
+  last_changed_by       : abp_locinst_lastchange_user;
+  last_changed_at       : abp_lastchange_tstmpl;
+  local_last_changed_at : abp_locinst_lastchange_tstmpl;
+
+}
