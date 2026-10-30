@@ -1,0 +1,24 @@
+specVersion: "4.0"
+metadata:
+  name: zdemopnkfdp
+type: application
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: https://<tenant>.s4hana.cloud.sap
+          authenticationType: reentranceTicket
+        app:
+          name: ZDEMO_PNK_FDP
+          description: Phiếu nhập kho (Demo FDP)
+          package: ZPK_DEMO_2
+          transport: ""
+        exclude:
+          - /test/
+          - /localService/

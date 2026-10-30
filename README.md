@@ -11,6 +11,8 @@ Mã nguồn lấy từ hệ DEV, package `ZPK_ADS_PDF`.
 
 Xem [docs/DAO_TAO.md](docs/DAO_TAO.md) và class demo `ZCL_ADS_PDF_DEMO` (bài 0–9, chạy F9 trong ADT).
 
+App Fiori demo FDP "Phiếu nhập kho" (Print preview, QR, gộp ô): [demo2/README.md](demo2/README.md).
+
 ## Kiến trúc
 
 ```

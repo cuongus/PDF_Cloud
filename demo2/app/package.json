@@ -1,0 +1,16 @@
+{
+  "name": "zdemopnkfdp",
+  "version": "1.0.0",
+  "description": "Demo in PDF bằng FDP + ADS (dữ liệu giả lập)",
+  "private": true,
+  "scripts": {
+    "build": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
+    "deploy": "npm run build && fiori deploy --config ui5-deploy.yaml",
+    "deploy-test": "npm run build && fiori deploy --config ui5-deploy.yaml --testMode true",
+    "undeploy": "fiori undeploy --config ui5-deploy.yaml"
+  },
+  "devDependencies": {
+    "@sap/ux-ui5-tooling": "1",
+    "@ui5/cli": "^4.0.0"
+  }
+}

@@ -1,0 +1,7 @@
+CLASS zbp_r_demo_ads_pnk DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zr_demo_ads_pnk.
+ENDCLASS.
+
+
+
+CLASS zbp_r_demo_ads_pnk IMPLEMENTATION.
+ENDCLASS.

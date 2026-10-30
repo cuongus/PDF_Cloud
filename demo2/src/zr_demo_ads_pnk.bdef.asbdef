@@ -1,0 +1,12 @@
+unmanaged implementation in class zbp_r_demo_ads_pnk unique;
+strict ( 2 );
+
+define behavior for ZR_DEMO_ADS_PNK alias GoodsReceipt
+lock master
+authorization master ( global )
+{
+  field ( readonly ) DocNo, FiscalYear;
+
+  static action ( authorization : global ) printPreview parameter ZD_DEMO_ADS_PNK_PRM result [0..*] ZD_DEMO_ADS_PDF_FILE;
+  static function ( authorization : global ) getDesignFiles result [0..*] ZD_DEMO_ADS_PDF_FILE;
+}

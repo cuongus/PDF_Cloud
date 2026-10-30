@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xdp:xdp xmlns:xdp="http://ns.adobe.com/xdp/">
+<template xmlns="http://www.xfa.org/schema/xfa-template/3.3/">
+<subform name="Form" layout="tb" locale="de_DE">
+<pageSet>
+<pageArea name="Page1" id="Page1">
+<contentArea x="10mm" y="10mm" w="190mm" h="277mm"/>
+<medium stock="a4" short="210mm" long="297mm"/>
+</pageArea>
+</pageSet>
+<subform name="GoodsReceipt" layout="tb" w="190mm">
+<subform layout="position" w="190mm" h="52mm">
+<draw x="0mm" y="0mm" w="120mm" h="5mm"><value><text>Đơn vị: CÔNG TY MẪU (DEMO)</text></value><font typeface="Arial" size="9pt" weight="bold"/></draw>
+<draw x="0mm" y="5mm" w="120mm" h="5mm"><value><text>Bộ phận: Kho</text></value><font typeface="Arial" size="9pt"/></draw>
+<draw x="130mm" y="0mm" w="60mm" h="5mm"><value><text>Mẫu số 01 - VT</text></value><font typeface="Arial" size="9pt" weight="bold"/><para hAlign="center"/></draw>
+<draw x="0mm" y="12mm" w="155mm" h="9mm"><value><text>PHIẾU NHẬP KHO</text></value><font typeface="Arial" size="16pt" weight="bold"/><para hAlign="center"/></draw>
+<field name="PostingDate" x="0mm" y="21mm" w="155mm" h="5mm"><ui><dateTimeEdit/></ui><font typeface="Arial" size="9pt" posture="italic"/><para hAlign="center"/><value><date/></value><format><picture>date{'Ngày 'DD' tháng 'MM' năm 'YYYY}</picture></format><bind match="once"><picture>date{YYYYMMDD}</picture></bind></field>
+<field name="DocNo" x="0mm" y="26mm" w="155mm" h="5mm"><ui><textEdit/></ui><font typeface="Arial" size="9pt"/><para hAlign="center"/><caption reserve="77mm"><para hAlign="right"/><value><text>Số: </text></value></caption></field>
+<field name="QrContent" x="160mm" y="10mm" w="28mm" h="28mm" access="readOnly"><ui><barcode type="QRCode" dataLength="10000" moduleWidth="0.6mm" moduleHeight="0.6mm" errorCorrectionLevel="1"/></ui><border><edge presence="hidden"/></border></field>
+<field name="Supplier" x="0mm" y="33mm" w="190mm" h="5mm"><ui><textEdit/></ui><font typeface="Arial" size="9pt"/><caption reserve="45mm"><value><text>Nhà cung cấp:</text></value></caption></field>
+<field name="PurchaseOrder" x="0mm" y="38mm" w="95mm" h="5mm"><ui><textEdit/></ui><font typeface="Arial" size="9pt"/><caption reserve="45mm"><value><text>Theo đơn mua hàng số:</text></value></caption></field>
+<field name="StorageLocation" x="95mm" y="38mm" w="95mm" h="5mm"><ui><textEdit/></ui><font typeface="Arial" size="9pt"/><caption reserve="30mm"><value><text>Nhập tại kho:</text></value></caption></field>
+<field name="HeaderText" x="0mm" y="43mm" w="190mm" h="5mm"><ui><textEdit/></ui><font typeface="Arial" size="9pt"/><caption reserve="45mm"><value><text>Diễn giải:</text></value></caption></field>
+</subform>
+<subform layout="position" w="190mm" h="10mm">
+<draw x="0mm" y="0mm" w="10mm" h="10mm"><value><text>STT</text></value><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></draw>
+<draw x="10mm" y="0mm" w="22mm" h="10mm"><value><text>Mã hàng</text></value><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></draw>
+<draw x="32mm" y="0mm" w="40mm" h="10mm"><value><text>Tên hàng</text></value><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></draw>
+<draw x="72mm" y="0mm" w="12mm" h="10mm"><value><text>ĐVT</text></value><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></draw>
+<draw x="84mm" y="0mm" w="10mm" h="10mm"><value><text>CL</text></value><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></draw>
+<draw x="94mm" y="0mm" w="20mm" h="10mm"><value><text>Quy đổi</text></value><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></draw>
+<draw x="114mm" y="0mm" w="32mm" h="5mm"><value><text>Số lượng</text></value><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></draw>
+<draw x="114mm" y="5mm" w="16mm" h="5mm"><value><text>Yêu cầu</text></value><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></draw>
+<draw x="130mm" y="5mm" w="16mm" h="5mm"><value><text>Thực nhập</text></value><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></draw>
+<draw x="146mm" y="0mm" w="20mm" h="10mm"><value><text>Đơn giá</text></value><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></draw>
+<draw x="166mm" y="0mm" w="24mm" h="10mm"><value><text>Thành tiền</text></value><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></draw>
+</subform>
+<subform name="_Item" layout="tb" w="190mm">
+<subform name="GoodsReceiptItem" layout="lr-tb" w="190mm">
+<occur min="0" max="-1"/>
+<field name="ItemNo" w="10mm" h="6mm"><ui><numericEdit/></ui><font typeface="Arial" size="8pt"/><para hAlign="center" vAlign="middle"/><value><integer/></value><border><edge thickness="0.2mm"/></border></field>
+<field name="Material" w="22mm" h="6mm"><ui><textEdit/></ui><font typeface="Arial" size="8pt"/><para vAlign="middle"/><margin leftInset="1mm"/><border><edge thickness="0.2mm"/></border></field>
+<field name="MaterialName" w="40mm" h="6mm"><ui><textEdit/></ui><font typeface="Arial" size="8pt"/><para vAlign="middle"/><margin leftInset="1mm"/><border><edge thickness="0.2mm"/></border></field>
+<field name="Unit" w="12mm" h="6mm"><ui><textEdit/></ui><font typeface="Arial" size="8pt"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></field>
+<field name="Quality" w="10mm" h="6mm"><ui><textEdit/></ui><font typeface="Arial" size="8pt"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></field>
+<field name="Conversion" w="20mm" h="6mm"><ui><textEdit/></ui><font typeface="Arial" size="8pt"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></field>
+<field name="QtyRequestedText" w="16mm" h="6mm"><ui><textEdit/></ui><font typeface="Arial" size="8pt"/><para hAlign="right" vAlign="middle"/><margin rightInset="1mm"/><border><edge thickness="0.2mm"/><edge thickness="0.2mm"/><edge thickness="0.2mm"/><edge thickness="0.2mm"/></border><event activity="initialize"><script contentType="application/x-javascript">var p = String(this.parent.MergePos.rawValue == null ? "S" : this.parent.MergePos.rawValue);var c = p.charAt(0);if (c == "M" || c == "L") this.border.getElement("edge", 0).presence = "hidden";if (c == "F" || c == "M") this.border.getElement("edge", 2).presence = "hidden";if (p.charAt(1) == "B") this.para.vAlign = "bottom";</script></event></field>
+<field name="MergePos" presence="hidden"><ui><textEdit/></ui></field>
+<field name="QtyReceived" w="16mm" h="6mm"><ui><numericEdit/></ui><font typeface="Arial" size="8pt"/><para hAlign="right" vAlign="middle"/><margin rightInset="1mm"/><value><decimal fracDigits="3"/></value><format><picture>num{z,zzz,zz9.99}</picture></format><border><edge thickness="0.2mm"/></border></field>
+<field name="Price" w="20mm" h="6mm"><ui><numericEdit/></ui><font typeface="Arial" size="8pt"/><para hAlign="right" vAlign="middle"/><margin rightInset="1mm"/><value><decimal fracDigits="0"/></value><format><picture>num{zzz,zzz,zz9}</picture></format><border><edge thickness="0.2mm"/></border></field>
+<field name="Amount" w="24mm" h="6mm"><ui><numericEdit/></ui><font typeface="Arial" size="8pt"/><para hAlign="right" vAlign="middle"/><margin rightInset="1mm"/><value><decimal fracDigits="0"/></value><format><picture>num{z,zzz,zzz,zz9}</picture></format><border><edge thickness="0.2mm"/></border></field>
+</subform>
+</subform>
+<subform layout="lr-tb" w="190mm">
+<draw w="114mm" h="6mm"><value><text>Cộng</text></value><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="center" vAlign="middle"/><border><edge thickness="0.2mm"/></border></draw>
+<field name="TotalQtyRequested" w="16mm" h="6mm"><ui><numericEdit/></ui><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="right" vAlign="middle"/><margin rightInset="1mm"/><value><decimal fracDigits="3"/></value><format><picture>num{z,zzz,zz9.99}</picture></format><border><edge thickness="0.2mm"/></border></field>
+<field name="TotalQtyReceived" w="16mm" h="6mm"><ui><numericEdit/></ui><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="right" vAlign="middle"/><margin rightInset="1mm"/><value><decimal fracDigits="3"/></value><format><picture>num{z,zzz,zz9.99}</picture></format><border><edge thickness="0.2mm"/></border></field>
+<draw w="20mm" h="6mm"><value><text/></value><border><edge thickness="0.2mm"/></border></draw>
+<field name="TotalAmount" w="24mm" h="6mm"><ui><numericEdit/></ui><font typeface="Arial" size="8pt" weight="bold"/><para hAlign="right" vAlign="middle"/><margin rightInset="1mm"/><value><decimal fracDigits="0"/></value><format><picture>num{z,zzz,zzz,zz9}</picture></format><border><edge thickness="0.2mm"/></border></field>
+</subform>
+<field name="AmountInWords" w="190mm" minH="7mm"><ui><textEdit multiLine="1"/></ui><font typeface="Arial" size="9pt" posture="italic"/><para vAlign="middle"/><caption reserve="58mm"><font typeface="Arial" size="9pt"/><value><text>Tổng số tiền (viết bằng chữ):</text></value></caption></field>
+<subform layout="lr-tb" w="190mm">
+<subform layout="tb" w="47mm"><draw w="47mm" h="5mm"><value><text>Người giao hàng</text></value><font typeface="Arial" size="9pt" weight="bold"/><para hAlign="center"/></draw><draw w="47mm" h="5mm"><value><text>(Ký, họ tên)</text></value><font typeface="Arial" size="8pt" posture="italic"/><para hAlign="center"/></draw><draw w="47mm" h="18mm"><value><text/></value></draw><field name="Shipper" w="47mm" h="5mm"><ui><textEdit/></ui><font typeface="Arial" size="9pt" weight="bold"/><para hAlign="center"/></field></subform>
+<subform layout="tb" w="47mm"><draw w="47mm" h="5mm"><value><text>Thủ kho</text></value><font typeface="Arial" size="9pt" weight="bold"/><para hAlign="center"/></draw><draw w="47mm" h="5mm"><value><text>(Ký, họ tên)</text></value><font typeface="Arial" size="8pt" posture="italic"/><para hAlign="center"/></draw><draw w="47mm" h="18mm"><value><text/></value></draw><field name="StoreKeeper" w="47mm" h="5mm"><ui><textEdit/></ui><font typeface="Arial" size="9pt" weight="bold"/><para hAlign="center"/></field></subform>
+<subform layout="tb" w="47mm"><draw w="47mm" h="5mm"><value><text>Quản lý kho</text></value><font typeface="Arial" size="9pt" weight="bold"/><para hAlign="center"/></draw><draw w="47mm" h="5mm"><value><text>(Ký, họ tên)</text></value><font typeface="Arial" size="8pt" posture="italic"/><para hAlign="center"/></draw><draw w="47mm" h="18mm"><value><text/></value></draw><field name="WarehouseManager" w="47mm" h="5mm"><ui><textEdit/></ui><font typeface="Arial" size="9pt" weight="bold"/><para hAlign="center"/></field></subform>
+<subform layout="tb" w="47mm"><draw w="47mm" h="5mm"><value><text>Kế toán</text></value><font typeface="Arial" size="9pt" weight="bold"/><para hAlign="center"/></draw><draw w="47mm" h="5mm"><value><text>(Ký, họ tên)</text></value><font typeface="Arial" size="8pt" posture="italic"/><para hAlign="center"/></draw><draw w="47mm" h="18mm"><value><text/></value></draw><field name="Accountant" w="47mm" h="5mm"><ui><textEdit/></ui><font typeface="Arial" size="9pt" weight="bold"/><para hAlign="center"/></field></subform>
+</subform>
+</subform>
+</subform>
+</template>
+</xdp:xdp>
