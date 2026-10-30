@@ -1,0 +1,5 @@
+@EndUserText.label: 'ADS demo - FDP over custom entities'
+define service ZUI_ADS_DEMO_FDP_CE {
+  expose ZI_ADS_DEMO_ORDER_CE     as SalesOrder;
+  expose ZI_ADS_DEMO_ORDERLINE_CE as SalesOrderLine;
+}

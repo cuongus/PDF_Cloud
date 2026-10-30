@@ -563,6 +563,16 @@ CLASS zcl_ads_pdf_demo IMPLEMENTATION.
 
     "B3 - render với template thiết kế theo XSD ở B1
     log_result( mo_inline->render_single( iv_template_id = lcl_inline_source=>c_template_id iv_xml = lv_xml ) ).
+
+    "Phần B - FDP trên CUSTOM ENTITY: dữ liệu do class query (if_rap_query_provider) trả về.
+    "  ZI_ADS_DEMO_ORDER_CE --_Line--> ZI_ADS_DEMO_ORDERLINE_CE, query: ZCL_ADS_DEMO_CE_QUERY
+    "  FDP gọi class query cho header, rồi gọi tiếp cho dòng với filter OrderNo = khoá header.
+    log( `  B) Custom entity: service ZUI_ADS_DEMO_FDP_CE, dữ liệu từ class query ZCL_ADS_DEMO_CE_QUERY` ).
+    DATA(lo_fdp_ce) = zcl_ads_pdf_fdp=>create( `ZUI_ADS_DEMO_FDP_CE` ).
+    log( |  Khoá: { concat_lines_of( table = lo_fdp_ce->get_key_names( ) sep = `, ` ) }, XSD { xstrlen( lo_fdp_ce->get_xsd( ) ) } byte| ).
+    DATA(lv_xml_ce) = lo_fdp_ce->read_xml( VALUE #( ( name = `OrderNo` value = `DH0001` ) ) ).
+    log( `  XML (đơn DH0001, dòng con lọc theo OrderNo):` ).
+    log_xml( lv_xml_ce ).
   ENDMETHOD.
 
   METHOD log.

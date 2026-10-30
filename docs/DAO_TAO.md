@@ -365,6 +365,58 @@ ENDTRY.
 - Mỗi `read_xml` = **một** chứng từ; nhiều chứng từ → gọi nhiều lần rồi đưa vào `documents` của `render`.
 - Dữ liệu đọc theo quyền của CDS (access control) như mọi truy cập CDS khác.
 
+### 5.6 FDP trên custom entity – dữ liệu từ class query
+
+Khi dữ liệu cần logic ABAP (gom nhóm, tính toán, đọc nhiều nguồn, gọi API), dùng **custom entity**:
+FDP gọi class query (`if_rap_query_provider`) thay vì đọc bảng/CDS. Đã chạy thật (bài 9 phần B):
+
+```
+ZI_ADS_DEMO_ORDER_CE (root custom entity) ──_Line──► ZI_ADS_DEMO_ORDERLINE_CE (custom entity)
+        @ObjectModel.query.implementedBy: 'ABAP:ZCL_ADS_DEMO_CE_QUERY'  (cả hai entity)
+
+define service ZUI_ADS_DEMO_FDP_CE {
+  expose ZI_ADS_DEMO_ORDER_CE     as SalesOrder;
+  expose ZI_ADS_DEMO_ORDERLINE_CE as SalesOrderLine;
+}
+```
+
+FDP gọi class query **hai lần**:
+
+| Lần | `io_request->get_entity_id( )` | Filter nhận được | Class trả về |
+|---|---|---|---|
+| 1 | `ZI_ADS_DEMO_ORDER_CE` | `OrderNo = 'DH0001'` (khoá truyền vào `read_xml`) | 1 đơn hàng |
+| 2 | `ZI_ADS_DEMO_ORDERLINE_CE` | `OrderNo = 'DH0001'` (khoá cha, theo điều kiện association) | các dòng của đơn đó |
+
+XML thu được (rút gọn) – cùng quy tắc tên như CDS thường:
+
+```xml
+<Form version="2">
+  <SalesOrder>
+    <OrderNo>DH0001</OrderNo> <OrderDate>20261030</OrderDate> <Customer>Công ty TNHH XYZ (DEMO)</Customer>
+    <QrContent>https://example.com/order/DH0001</QrContent> <TotalAmount>2350000 </TotalAmount>
+    <_Line>
+      <SalesOrderLine><OrderNo>DH0001</OrderNo><ItemNo>10 </ItemNo><Product>Bàn làm việc</Product>...</SalesOrderLine>
+      <SalesOrderLine>... ItemNo 20 ...</SalesOrderLine>
+      <SalesOrderLine>... ItemNo 30 ...</SalesOrderLine>
+    </_Line>
+  </SalesOrder>
+</Form>
+```
+
+Class query phải (xem `ZCL_ADS_DEMO_CE_QUERY`):
+
+1. Phân biệt entity bằng `io_request->get_entity_id( )` (một class phục vụ nhiều entity được).
+2. **Áp filter** `io_request->get_filter( )->get_as_ranges( )` – bắt buộc cho entity con, nếu không FDP nhận dòng của mọi chứng từ.
+3. Đọc `get_sort_elements( )`, `get_paging( )` (framework yêu cầu), trả `set_total_number_of_records` khi được hỏi và `set_data` khi `is_data_requested( )`.
+
+Lưu ý:
+
+- Custom entity cũng sinh XSD như CDS thường → thiết kế form trong LiveCycle y hệt mục 5.4.
+- Field `QrContent` minh hoạ cho **field QR Code của LiveCycle**: field mã vạch nhận chuỗi, ADS tự vẽ QR – không cần ảnh.
+  [Chưa kiểm chứng] chưa render thử template có field QR Code trên hệ này.
+- Tên field CDS tránh từ khoá (vd `LineNo` không dùng được → `ItemNo`).
+- Quyền: custom entity không có access control tự động – nếu cần thì kiểm tra quyền trong class query.
+
 ---
 
 ## 6. Dùng PDF sau khi sinh
@@ -485,11 +537,12 @@ Template mẫu của bài 1–8 nằm ở bảng cũ `ZCORE_TB_TEMPPDF` (client 
 | 6 | Lỗi: thiếu template, sai kiểu số, file không phải XDP | – | đọc được trace |
 | 7 | Upload template bằng EML rồi render từ bảng mới | FormVGMCasa → ZVGM_DEMO | khi bật `c_write_template_table` |
 | 8 | Print queue: render PDL (+ tạo item khi bật `c_create_print_item`) | zphieuketoan | PDL cho queue DEFAULT |
-| 9 | FDP: CDS → XSD → XML → PDF | ZUI_ADS_DEMO_FDP + ZDEMO_INVOICE | 1 trang, 3 dòng hàng |
+| 9 | FDP: CDS → XSD → XML → PDF; phần B: FDP trên custom entity (class query) | ZUI_ADS_DEMO_FDP + ZDEMO_INVOICE; ZUI_ADS_DEMO_FDP_CE | 1 trang, 3 dòng hàng; XML đơn hàng từ class query |
 
 Hai cờ `c_write_template_table`, `c_create_print_item` mặc định tắt – chạy demo không ghi gì xuống hệ thống.
 
 Object demo đi kèm: `ZI_ADS_DEMO_INVOICE`, `ZI_ADS_DEMO_INVOICEITEM`, `ZUI_ADS_DEMO_FDP` (dữ liệu hằng số);
+`ZI_ADS_DEMO_ORDER_CE`, `ZI_ADS_DEMO_ORDERLINE_CE`, `ZCL_ADS_DEMO_CE_QUERY`, `ZUI_ADS_DEMO_FDP_CE` (custom entity);
 template mẫu [`docs/samples/demo_invoice.xdp`](samples/demo_invoice.xdp) mở được bằng LiveCycle Designer.
 
 ---
