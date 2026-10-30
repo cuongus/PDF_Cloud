@@ -1,0 +1,5 @@
+@EndUserText.label: 'ADS demo - form data provider (FDP)'
+define service ZUI_ADS_DEMO_FDP {
+  expose ZI_ADS_DEMO_INVOICE     as Invoice;
+  expose ZI_ADS_DEMO_INVOICEITEM as InvoiceItem;
+}

@@ -9,7 +9,7 @@ Mã nguồn lấy từ hệ DEV, package `ZPK_ADS_PDF`.
 
 ## Đào tạo
 
-Xem [docs/DAO_TAO.md](docs/DAO_TAO.md) và class demo `ZCL_ADS_PDF_DEMO` (9 bài, chạy F9 trong ADT).
+Xem [docs/DAO_TAO.md](docs/DAO_TAO.md) và class demo `ZCL_ADS_PDF_DEMO` (bài 0–9, chạy F9 trong ADT).
 
 ## Kiến trúc
 
@@ -30,6 +30,7 @@ Chương trình in ──► ZCL_ADS_PDF_RENDERER ──► ZIF_ADS_PDF_ENGINE �
 | `ZCL_ADS_PDF_XDP_PARSER` | Đọc field có binding trong XDP, sinh XML từ cấu trúc ABAP theo tên (normal binding) |
 | `ZCL_ADS_PDF_FDP` | XML + XSD từ service definition (RAP Data Services for Print Forms) |
 | `ZCX_ADS_PDF` | Exception: text, mã template, trace ADS |
+| `ZCL_ADS_PDF_DEMO` + `ZI_ADS_DEMO_INVOICE(ITEM)`, `ZUI_ADS_DEMO_FDP` | Class đào tạo bài 0–9 và dữ liệu giả lập cho bài FDP (xem docs/DAO_TAO.md) |
 | `ZADS_A_TEMPLATE`, `ZR_/ZC_ADS_TEMPLATETP`, `ZUI_ADS_TEMPLATE(_O4)` | App quản lý template (draft, tự tăng phiên bản, kiểm tra mã / file / kiểu file) |
 
 ## Cách dùng

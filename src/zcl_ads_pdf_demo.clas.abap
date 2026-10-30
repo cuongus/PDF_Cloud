@@ -1,8 +1,9 @@
 *=====================================================================
 * Tên/Mã     : ZCL_ADS_PDF_DEMO
 * Mô tả chung: Class đào tạo dùng package ZPK_ADS_PDF để sinh PDF. Chạy F9
-*              trong ADT (if_oo_adt_classrun) - 9 bài, dữ liệu giả lập,
+*              trong ADT (if_oo_adt_classrun) - bài 0..9, dữ liệu giả lập,
 *              template có sẵn trong bảng cũ ZCORE_TB_TEMPPDF:
+*              0 Hello PDF (chạy mọi client) .. ZDEMO_INVOICE (XDP inline)
 *              1 Khám phá template ............ FormVGMCasa
 *              2 XML từ cấu trúc ABAP ......... FormVGMCasa (tờ khai VGM)
 *              3 Dựng XML thủ công, tiền VND .. zphieuthu (phiếu thu 2 liên)
@@ -11,7 +12,7 @@
 *              6 Xử lý lỗi
 *              7 Upload template vào bảng mới (EML) rồi render từ bảng mới
 *              8 Print queue (render PDL; tạo item thật khi bật cờ)
-*              9 FDP: khoá + XSD từ service definition
+*              9 FDP (chạy mọi client) ...... ZUI_ADS_DEMO_FDP -> XSD -> XML -> PDF
 *              Template không có trong client đang chạy -> bài đó tự bỏ qua.
 * Tham Số    : C_WRITE_TEMPLATE_TABLE - bật để bài 7 ghi bảng ZADS_A_TEMPLATE
 *              C_CREATE_PRINT_ITEM    - bật để bài 8 tạo item trong print queue
@@ -49,6 +50,8 @@ CLASS zcl_ads_pdf_demo DEFINITION
     DATA mt_log      TYPE string_table.
     DATA mo_legacy   TYPE REF TO zif_ads_pdf_template_source.
     DATA mo_renderer TYPE REF TO zcl_ads_pdf_renderer.
+    "! Renderer dùng template inline ZDEMO_INVOICE (bài 0, bài 9) - chạy được ở mọi client
+    DATA mo_inline   TYPE REF TO zcl_ads_pdf_renderer.
     "! XML các bài trước, dùng lại ở bài 7 / 8
     DATA mv_vgm_xml  TYPE xstring.
     DATA mv_pkt_xml  TYPE xstring.
@@ -74,6 +77,11 @@ CLASS zcl_ads_pdf_demo DEFINITION
       RETURNING VALUE(rv_content) TYPE xstring
       RAISING   zcx_ads_pdf.
 
+    "! In XML ra nhật ký, mỗi thẻ một dòng (để học viên nhìn cấu trúc)
+    METHODS log_xml
+      IMPORTING iv_xml TYPE xstring.
+
+    METHODS lesson_00_hello       RAISING zcx_ads_pdf.
     METHODS lesson_01_explore     RAISING zcx_ads_pdf.
     METHODS lesson_02_from_struct RAISING zcx_ads_pdf.
     METHODS lesson_03_builder     RAISING zcx_ads_pdf.
@@ -102,13 +110,15 @@ CLASS zcl_ads_pdf_demo IMPLEMENTATION.
     "Dự án thật: zcl_ads_pdf_renderer=>create( ) (bảng mới) hoặc create_for_forms( ).
     mo_legacy   = NEW lcl_legacy_source( ).
     mo_renderer = zcl_ads_pdf_renderer=>create( io_template_source = mo_legacy ).
+    mo_inline   = zcl_ads_pdf_renderer=>create( io_template_source = NEW lcl_inline_source( ) ).
 
     DATA(lv_step) = 0.
-    DO 9 TIMES.
-      lv_step = sy-index.
+    DO 10 TIMES.
+      lv_step = sy-index - 1.
       log( `` ).
       TRY.
           CASE lv_step.
+            WHEN 0. lesson_00_hello( ).
             WHEN 1. lesson_01_explore( ).
             WHEN 2. lesson_02_from_struct( ).
             WHEN 3. lesson_03_builder( ).
@@ -126,6 +136,47 @@ CLASS zcl_ads_pdf_demo IMPLEMENTATION.
     ENDDO.
 
     rt_log = mt_log.
+  ENDMETHOD.
+
+  METHOD lesson_00_hello.
+    "Ví dụ nhỏ nhất: tự dựng XML + template + 1 lệnh render. Không cần bảng template.
+    "Tên thẻ XML phải trùng tên subform/field trong XDP (Form > Invoice > ...).
+    log( `BÀI 0 - Hello PDF: dựng XML -> render_single -> nhận PDF (template inline ZDEMO_INVOICE)` ).
+
+    DATA(lo_xml) = zcl_ads_pdf_xml=>create( `Form` ).               "thẻ gốc = subform gốc 'Form'
+    lo_xml->open( `Invoice` ).
+    lo_xml->add( iv_name = `InvoiceNo`   iv_value = `HD0000` ).
+    lo_xml->add( iv_name = `InvoiceDate` iv_value = `20261030` ).    "XDP khai <bind><picture>date{YYYYMMDD}
+    lo_xml->add( iv_name = `SellerName`  iv_value = `CÔNG TY TNHH ABC (DEMO)` ).
+    lo_xml->add( iv_name = `BuyerName`   iv_value = `Khách lẻ & đại lý <demo>` ).   "& < > tự escape
+    lo_xml->open( `_Item` ).
+    lo_xml->open( `InvoiceItem` ).                                   "subform lặp: mở 1 lần cho mỗi dòng
+    lo_xml->add_number( iv_name = `ItemNo`   iv_value = 10 ).
+    lo_xml->add( iv_name = `Description` iv_value = `Bàn làm việc` ).
+    lo_xml->add_number( iv_name = `Quantity` iv_value = 1 ).
+    lo_xml->add_number( iv_name = `Amount`   iv_value = 500000 ).        "field số: truyền số RAW
+    lo_xml->close( ).                                                "InvoiceItem
+    lo_xml->close( ).                                                "_Item
+    lo_xml->add_number( iv_name = `TotalAmount` iv_value = 500000 ).
+    DATA(lv_xml) = lo_xml->to_xstring( ).                            "tự đóng Invoice, Form
+
+    log( `  XML gửi cho ADS (console ADT hiển thị &amp; thành &amp;amp; - dữ liệu thật chỉ escape 1 lần):` ).
+    log_xml( lv_xml ).
+
+    DATA(ls_pdf) = mo_inline->render_single( iv_template_id = lcl_inline_source=>c_template_id
+                                             iv_xml         = lv_xml ).
+    log_result( ls_pdf ).
+    log( `  ls_pdf-pdf (xstring) -> lưu attachment / trả về Fiori; ls_pdf-pdf_base64 -> trả qua API` ).
+  ENDMETHOD.
+
+  METHOD log_xml.
+    DATA lt_line TYPE string_table.
+    DATA(lv_text) = cl_abap_conv_codepage=>create_in( codepage = `UTF-8` )->convert( iv_xml ).
+    lv_text = replace( val = lv_text sub = `><` with = |>{ cl_abap_char_utilities=>newline }<| occ = 0 ).
+    SPLIT lv_text AT cl_abap_char_utilities=>newline INTO TABLE lt_line.
+    LOOP AT lt_line INTO DATA(lv_line).
+      log( |    { lv_line }| ).
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD lesson_01_explore.
@@ -490,13 +541,28 @@ CLASS zcl_ads_pdf_demo IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD lesson_09_fdp.
-    log( `BÀI 9 - FDP: dữ liệu + XSD từ service definition (ví dụ ZUI_ADS_TEMPLATE)` ).
-    DATA(lo_fdp) = zcl_ads_pdf_fdp=>create( `ZUI_ADS_TEMPLATE` ).
-    log( |  Khoá cần truyền cho read_xml: { concat_lines_of( table = lo_fdp->get_key_names( ) sep = `, ` ) }| ).
+    "Luồng FDP đầy đủ, dữ liệu giả lập, chạy được ở mọi client:
+    "  CDS ZI_ADS_DEMO_INVOICE (header) --_Item--> ZI_ADS_DEMO_INVOICEITEM (dòng)
+    "  Service definition ZUI_ADS_DEMO_FDP expose: Invoice, InvoiceItem
+    "  B1 get_xsd  -> XSD: nạp vào LiveCycle làm data connection, kéo field ra form
+    "  B2 read_xml -> XML 1 hoá đơn theo khoá; tên thẻ = tên expose / tên field CDS
+    "  B3 render   -> template ZDEMO_INVOICE (thiết kế theo XSD ở B1)
+    log( `BÀI 9 - FDP: CDS + service definition -> XSD (thiết kế form) -> XML (lúc in) -> PDF` ).
 
-    DATA(lv_xsd) = cl_abap_conv_codepage=>create_in( codepage = `UTF-8` )->convert( lo_fdp->get_xsd( ) ).
-    log( |  XSD { strlen( lv_xsd ) } ký tự - lưu ra file .xsd, nạp vào LiveCycle: New Data Connection > XML Schema| ).
-    log( |  { substring( val = lv_xsd len = nmin( val1 = strlen( lv_xsd ) val2 = 150 ) ) }...| ).
+    DATA(lo_fdp) = zcl_ads_pdf_fdp=>create( `ZUI_ADS_DEMO_FDP` ).
+    log( |  Khoá của root (truyền vào read_xml): { concat_lines_of( table = lo_fdp->get_key_names( ) sep = `, ` ) }| ).
+
+    "B1 - lúc THIẾT KẾ form (làm 1 lần): lấy XSD, lưu file .xsd, LiveCycle: File > New Data Connection
+    DATA(lv_xsd) = lo_fdp->get_xsd( ).
+    log( |  B1 XSD: { xstrlen( lv_xsd ) } byte - phần tử gốc Form > Invoice > _Item > InvoiceItem (lặp)| ).
+
+    "B2 - lúc IN: đọc dữ liệu 1 hoá đơn theo khoá
+    DATA(lv_xml) = lo_fdp->read_xml( VALUE #( ( name = `InvoiceNo` value = `HD0001` ) ) ).
+    log( `  B2 XML do FDP sinh ra (ngày dạng YYYYMMDD, số dạng RAW):` ).
+    log_xml( lv_xml ).
+
+    "B3 - render với template thiết kế theo XSD ở B1
+    log_result( mo_inline->render_single( iv_template_id = lcl_inline_source=>c_template_id iv_xml = lv_xml ) ).
   ENDMETHOD.
 
   METHOD log.
